@@ -14,37 +14,24 @@
     },
     "auth": {
       "type": "OAuth2",
-      "ClientSecret": "{{clientSecret}}",
       "ClientId": "{{clientId}}",
-      "TokenEndpoint": "https://np-lab.onelogin.com/auth/oauth2/v2/token",
+      "ClientSecret": "{{clientSecret}}",
+      "tokenEndpoint": "https://np-lab.onelogin.com/auth/oauth2/v2/token",
       "tokenEndpointHeaders": {
-        "Accept": "application/json",
-        "Content-Type": "application/x-www-form-urlencoded"
-    },
+        "Accept": "application/json"
+      },
       "TokenEndpointQueryParameters": {},
-      "scope": "token",
       "grantType": "client_credentials"
     },
     "request": {
-      "apiEndpoint": "<Enter your api url>",
+      "apiEndpoint": "https://np-lab.onelogin.com/api/1/events",
       "httpMethod": "GET",
-      "queryParameters": {
-        "max_results": 100
-      },
-      "queryWindowInMin": 5,
-      "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.000000+00:00",
-      "startTimeAttributeName": "since",
-      "endTimeAttributeName": "until",
-      "rateLimitQps": 10,
-      "retryCount": 3,
-      "timeoutInSeconds": 60,
       "headers": {
-        "Accept": "application/json",
-        "User-Agent": "Scuba"
+        "Accept": "application/json"
       }
     },
     "response": {
-      "eventsJsonPaths": ["$"],
+      "eventsJsonPaths": ["$.data"],
       "format": "json"
     },
     "paging": {
