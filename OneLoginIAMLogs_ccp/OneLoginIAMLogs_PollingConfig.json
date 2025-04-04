@@ -1,42 +1,52 @@
-[{
-  "name": "OneLoginIAMLogsCCP",
-  "apiVersion": "2022-10-01-preview",
-  "type": "Microsoft.SecurityInsights/dataConnectors",
-  "location": "{{location}}",
-  "kind": "RestApiPoller",
-  "properties": {
-    "connectorDefinitionName": "OneLoginIAMLogsCCPDefinition",
-    "dataType": "OneLoginV2_CL",
-    "dcrConfig": {
+[
+  {
+    "name": "OneLoginIAMLogsCCP",
+    "apiVersion": "2022-10-01-preview",
+    "type": "Microsoft.SecurityInsights/dataConnectors",
+    "location": "{{location}}",
+    "kind": "RestApiPoller",
+    "properties": {
+      "connectorDefinitionName": "OneLoginIAMLogsCCPDefinition",
+      "dataType": "OneLoginV2_CL",
+      "dcrConfig": {
         "dataCollectionEndpoint": "{{dataCollectionEndpoint}}",
         "dataCollectionRuleImmutableId": "{{dataCollectionRuleImmutableId}}",
         "streamName": "Custom-OneLoginIAM"
-    },
-    "auth": {
-      "type": "OAuth2",
-      "ClientId": "{{clientId}}",
-      "ClientSecret": "{{clientSecret}}",
-      "tokenEndpoint": "https://np-lab.onelogin.com/auth/oauth2/v2/token",
-      "tokenEndpointHeaders": {
-        "Accept": "application/json"
       },
-      "TokenEndpointQueryParameters": {},
-      "grantType": "client_credentials"
-    },
-    "request": {
-      "apiEndpoint": "https://np-lab.onelogin.com/api/1/events",
-      "httpMethod": "GET",
-      "headers": {
-        "Accept": "application/json"
+      "auth": {
+        "type": "OAuth2",
+        "ClientId": "{{clientId}}",
+        "ClientSecret": "{{clientSecret}}",
+        "tokenEndpoint": "https://np-lab.onelogin.com/auth/oauth2/v2/token",
+        "tokenEndpointHeaders": {
+          "Accept": "application/json"
+        },
+        "TokenEndpointQueryParameters": {},
+        "grantType": "client_credentials"
+      },
+      "request": {
+        "apiEndpoint": "https://np-lab.onelogin.com/api/1/events",
+        "httpMethod": "GET",
+        "QueryWindowInMin": 10,
+        "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+        "queryParameters": {
+          "until": "{_QueryWindowEndTime}",
+          "since": "{_QueryWindowStartTime}"
+        },
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "eventsJsonPaths": [
+          "$.data"
+        ],
+        "format": "json"
+      },
+      "paging": {
+        "pagingType": "LinkHeader",
+        "linkHeaderTokenJsonPath": "$.pagination.next_link"
       }
-    },
-    "response": {
-      "eventsJsonPaths": ["$.data"],
-      "format": "json"
-    },
-    "paging": {
-      "pagingType": "LinkHeader",
-      "linkHeaderTokenJsonPath" : "$.pagination.next_link"
     }
   }
-}]
+]
