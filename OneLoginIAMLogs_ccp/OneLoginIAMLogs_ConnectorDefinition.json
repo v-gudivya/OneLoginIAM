@@ -1,4 +1,3 @@
-
 {
   "type": "Microsoft.SecurityInsights/dataConnectorDefinitions",
   "apiVersion": "2022-09-01-preview",
@@ -10,25 +9,37 @@
       "id": "OneLoginIAMLogsCCPDefinition",
       "title": "OneLogin IAM Platform",
       "publisher": "Microsoft",
-      "descriptionMarkdown": "The [OneLogin](https://www.onelogin.com/) data connector provides the capability to ingest common OneLogin IAM Platform events into Microsoft Sentinel through Webhooks. The OneLogin Event Webhook API which is also known as the Event Broadcaster will send batches of events in near real-time to an endpoint that you specify. When a change occurs in the OneLogin, an HTTPS POST request with event information is sent to a callback data connector URL. Refer to [Webhooks documentation](https://developers.onelogin.com/api-docs/1/events/webhooks) for more information. The connector provides ability to get events which helps to examine potential security risks, analyze your team's use of collaboration, diagnose configuration problems and more.",
-      "graphQueriesTableName": "OneLoginV2_CL",
+      "descriptionMarkdown": "The [OneLogin](https://www.onelogin.com/) data connector provides the capability to ingest common OneLogin IAM Platform events into Microsoft Sentinel through REST API by using OneLogin [Events API](https://developers.onelogin.com/api-docs/1/events/get-events) and OneLogin [Users API](https://developers.onelogin.com/api-docs/1/users/get-users). The connector provides ability to get events which helps to examine potential security risks, analyze your team's use of collaboration, diagnose configuration problems and more.",
       "graphQueries": [
         {
           "metricName": "Total events received",
-          "legend": "OneLogin IAM Logs",
-          "baseQuery": "{{graphQueriesTableName}}"
+          "legend": "OneLogin IAM Event Logs",
+          "baseQuery": "OneLoginEventsV2_CL"
+        },
+        {
+          "metricName": "Total users received",
+          "legend": "OneLogin IAM User Logs",
+          "baseQuery": "OneLoginUsersV2_CL"
         }
       ],
       "sampleQueries": [
         {
-          "description": "Get Sample of OneLogin IAM Logs",
-          "query": "{{graphQueriesTableName}}\n | take 10"
+          "description": "Get Sample of OneLogin IAM Event Logs",
+          "query": "OneLoginEventsV2_CL\n | take 10"
+        },
+        {
+          "description": "Get a Sample of OneLogin IAM User Logs",
+          "query": "OneLoginUsersV2_CL\n | take 10"
         }
       ],
       "dataTypes": [
         {
-          "name": "{{graphQueriesTableName}}",
-          "lastDataReceivedQuery": "{{graphQueriesTableName}}\n | summarize Time = max(TimeGenerated)\n| where isnotempty(Time)"
+          "name": "OneLoginEventsV2_CL",
+          "lastDataReceivedQuery": "OneLoginEventsV2_CL\n | summarize Time = max(TimeGenerated)\n| where isnotempty(Time)"
+        },
+        {
+          "name": "OneLoginUsersV2_CL",
+          "lastDataReceivedQuery": "OneLoginUsersV2_CL\n | summarize Time = max(TimeGenerated)\n| where isnotempty(Time)"
         }
       ],
       "connectivityCriteria": [
@@ -50,8 +61,7 @@
             "requiredPermissions": {
               "read": true,
               "write": true,
-              "delete": true,
-              "action": false
+              "delete": true
             }
           }
         ]
@@ -60,21 +70,35 @@
         {
           "instructions": [
             {
-              "type": "Markdown",
+              "type": "Textbox",
               "parameters": {
-                "content": ">**NOTE:** To ingest data from OneLogin IAM, you need to follow the below steps"
+                "label": "OneLogin Domain",
+                "placeholder": "Enter your Company's OneLogin Domain",
+                "type": "text",
+                "name": "domain",
+                "required": true
               }
             },
             {
               "type": "Markdown",
               "parameters": {
-                "content": "#### 1. API Credentials \n ."
+                "content": "In the below URL, replace domain with your OneLogin domain name."
+              }
+            },
+            {
+              "type": "Textbox",
+              "parameters": {
+                "label": "OneLogin Authentication URL",
+                "defaultValue": "https://domain.onelogin.com/auth/oauth2/v2/token",
+                "type": "text",
+                "name": "authlink",
+                "required": true
               }
             },
             {
               "type": "Markdown",
               "parameters": {
-                "content": "#### 2. Setup \n ."
+                "content": "**API Credentials** \n To ingest data from OneLogin IAM to Microsoft Sentinel, you need to have API Credentials. \n To create API Credentials follow the document link provided here, [Click Here](https://developers.onelogin.com/api-docs/1/getting-started/working-with-api-credentials). \n Make sure to have an account type of either account-owner or administrator to create the API credentials. \n Once you create the API Credentials you get your Client ID and Client Secret, give the values in the below fields and click on Connect."
               }
             },
             {
